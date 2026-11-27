@@ -5,7 +5,6 @@ import math
 import queue
 import threading
 
-
 def MainRadar(center, radius,start,end):
     points = []
     h,k = center
@@ -52,8 +51,7 @@ thread = threading.Thread(target=getData,daemon=True)
 thread.start()
 
 running = True
-forward = True
-count = 0
+
 while running:
     try:
         for event in pygame.event.get():
@@ -63,27 +61,25 @@ while running:
         screen.fill((0,0,0))
         pygame.draw.polygon(screen, "light green", points)
         
-        if forward:
-            count += 1
-            if count >= 180:
-                forward = False
-        elif not forward:
-            count -= 1
-            if count <= 0:
-                forward = True
-        item = int(task_queue.get())
-        if item >= 150:
-            item = 150
         
-        if item !=0:
+        item = task_queue.get()
+        arduinoData = [int(x) for x in item.split(",")]
+
+            
+        if arduinoData[0] >= 150:
+            arduinoData[0] = 150
+        elif arduinoData[0] <= 2:
+            arduinoData[0] = 2
+        
+        if arduinoData[0] !=0:
             pygame.draw.polygon(
                 screen,
                 "red",
                 RadarSegments(
                     (200,75),
-                    count,
-                    (count+5),
-                    item
+                    arduinoData[1],
+                    (arduinoData[1]+5),
+                    arduinoData[0]
                 )
             )
     finally:

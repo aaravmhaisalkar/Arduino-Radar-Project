@@ -43,7 +43,9 @@ void loop() {
   unsigned long duration = pulseIn(echo, HIGH, 30000);
   int distance = duration * 0.0343 / 2.0;
   
-  Serial.println(distance);
+  Serial.print(distance);
+  Serial.print(",");
+  Serial.println(angle);
 
   delay(60);
 }
